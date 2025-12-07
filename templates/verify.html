@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center mt-5">
+  <h2 class="text-success">✅ Email Verified Successfully!</h2>
+  <p>You can now login to your account.</p>
+  <a href="{{ url_for('auth.login') }}" class="btn btn-primary mt-3">Go to Login</a>
+</div>
+{% endblock %}

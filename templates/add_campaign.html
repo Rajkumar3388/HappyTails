@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* Full-screen body with animated gradient */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+
+/* Card container */
+.campaign-card {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    text-align: center;
+    animation: cardFadeIn 1s ease forwards;
+}
+
+/* Card fade-in animation */
+@keyframes cardFadeIn {
+    0% {opacity: 0; transform: translateY(-50px);}
+    100% {opacity: 1; transform: translateY(0);}
+}
+
+/* Form title */
+.campaign-card h2 {
+    margin-bottom: 25px;
+    color: #ff6f61;
+    font-size: 2rem;
+    animation: floatTitle 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes floatTitle {
+    0% { transform: translateY(-5px); }
+    50% { transform: translateY(0); }
+    100% { transform: translateY(-5px); }
+}
+
+/* Inputs */
+.campaign-card .form-control {
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.campaign-card .form-control:focus {
+    border-color: #ff6f61;
+    box-shadow: 0 0 10px rgba(255,111,97,0.3);
+    outline: none;
+}
+
+/* Button */
+.campaign-card button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(135deg,#ff6f61,#ff9a8b);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.campaign-card button:hover {
+    background: linear-gradient(135deg,#ff9a8b,#ff6f61);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+</style>
+
+<div class="campaign-card">
+  <h2>Create New Campaign</h2>
+  <form action="{{ url_for('seller.add_campaign') }}" method="POST">
+    <input type="text" name="name" class="form-control" placeholder="Campaign Name" required>
+    <input type="number" name="discount" class="form-control" placeholder="Discount %" step="0.01" min="0" required>
+    <textarea name="description" class="form-control" rows="3" placeholder="Description"></textarea>
+    <input type="date" name="start_date" class="form-control" required>
+    <input type="date" name="end_date" class="form-control" required>
+    <button type="submit">Create Campaign</button>
+  </form>
+</div>
+
+{% endblock %}

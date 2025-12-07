@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+body {
+    background: #fff8f0;
+    background-image: url("{{ url_for('static', filename='images/paw_pattern.png') }}");
+    background-repeat: repeat;
+    background-size: 100px 100px;
+    min-height: 100vh;
+}
+
+/* Pet Detail Card */
+.pet-detail-card {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    background: #fff;
+    transition: transform 0.2s ease-in-out;
+}
+
+.pet-detail-card:hover {
+    transform: translateY(-3px);
+}
+
+.pet-detail-card img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 15px;
+}
+
+.pet-detail-body {
+    padding: 25px;
+    text-align: center;
+}
+
+.pet-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ff6f61;
+    margin-bottom: 15px;
+}
+
+.pet-attr {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.pet-attr strong {
+    color: #444;
+}
+
+/* Buttons */
+.btn-group a {
+    margin: 5px;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .pet-detail-card {
+        margin: 15px;
+    }
+
+    .pet-detail-card img {
+        max-height: 220px;
+    }
+
+    .pet-detail-body {
+        padding: 15px;
+    }
+
+    .pet-name {
+        font-size: 1.6rem;
+    }
+
+    .pet-attr {
+        font-size: 1rem;
+    }
+}
+</style>
+
+<div class="container mt-5">
+    <div class="card pet-detail-card mx-auto p-3" style="max-width: 650px;">
+        {% if pet.image %}
+            <img src="{{ url_for('static', filename='uploads/' + pet.image) }}" alt="{{ pet.name }}">
+        {% else %}
+            <img src="{{ url_for('static', filename='images/default_pet.png') }}" alt="Default Pet">
+        {% endif %}
+
+        <div class="pet-detail-body">
+            <h2 class="pet-name">{{ pet.name }}</h2>
+            <p class="pet-attr"><strong>Breed:</strong> {{ pet.breed }}</p>
+            <p class="pet-attr"><strong>Age:</strong> {{ pet.age }} years</p>
+            {% if pet.medical_history %}
+                <p class="pet-attr"><strong>Medical History:</strong> {{ pet.medical_history }}</p>
+            {% endif %}
+
+            <div class="btn-group">
+                <a href="{{ url_for('owner.pets') }}" class="btn btn-secondary">⬅ Back</a>
+                <a href="{{ url_for('owner.edit_pet', pet_id=pet.id) }}" class="btn btn-warning">✏️ Edit</a>
+                <a href="{{ url_for('owner.delete_pet', pet_id=pet.id) }}" 
+                   class="btn btn-danger"
+                   onclick="return confirm('Are you sure you want to delete this pet?');">🗑️ Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

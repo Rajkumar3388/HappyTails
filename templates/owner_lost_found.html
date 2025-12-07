@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lost & Found Dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    min-height: 100vh;
+    margin: 0;
+}
+/* Header */
+header {
+    background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1470&q=80') center/cover no-repeat;
+    color: #fff; text-align: center; padding: 60px 20px; position: relative;
+}
+header::after {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+}
+header h1, header p { position: relative; z-index: 1; }
+header h1 { font-size: 3rem; margin-bottom: 10px; }
+header p a { color:#ffd700; text-decoration:underline; font-weight:500; }
+
+/* Sections */
+section { padding:50px 20px; max-width: 1200px; margin: auto; }
+
+/* Action cards */
+.action-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom:50px; }
+.action-cards .card {
+    border-radius: 25px; padding:40px 20px; text-align:center; color:#fff;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.action-cards .card:hover { transform: translateY(-12px); box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+.action-cards .card a.button-primary {
+    background: #ffd700; color:#000; padding:12px 25px; border-radius:15px; display:inline-block; margin-top:20px; font-weight:600;
+}
+
+/* Pet cards */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+.card { border-radius: 20px; box-shadow: 0 12px 30px rgba(0,0,0,0.15); transition: transform 0.3s, box-shadow 0.3s; overflow:hidden; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); }
+.card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.25); }
+.card img { width: 100%; height: 220px; object-fit: cover; border-bottom: 1px solid #eee; }
+
+/* Status badge */
+.status-badge { font-weight: bold; padding: 6px 14px; border-radius: 20px; color: #fff; font-size:0.85rem; }
+.status-lost { background-color: #e74c3c; }
+.status-found { background-color: #27ae60; }
+
+/* Buttons */
+.button-primary { background-color: #667eea; color: #fff; border: none; padding: 8px 16px; border-radius: 12px; font-weight:500; }
+.button-primary:hover { background-color: #556cd6; color: #fff; }
+
+/* Pet info inside modal */
+.pet-info p { margin-bottom: 8px; display:flex; align-items:center; }
+.pet-info p i { width:22px; margin-right:10px; color:#667eea; }
+
+.modal-body img { border-radius: 12px; width:100%; margin-bottom:15px; }
+.text-success i { margin-right:5px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🐾 Lost & Found Dashboard</h1>
+  <p><a href="{{ url_for('owner.dashboard') }}">⬅ Back to Dashboard</a></p>
+</header>
+
+<section>
+  <!-- Action Cards -->
+  <div class="action-cards">
+    <div class="card">
+      <h4><i class="fa-solid fa-plus"></i> Report a Lost Pet</h4>
+      <p>Quickly report your lost pet with last-seen location.</p>
+      <a href="{{ url_for('owner.report_lost_pet') }}" class="button-primary">Report Now</a>
+    </div>
+    <div class="card">
+      <h4><i class="fa-solid fa-bell"></i> Lost Pet Alerts</h4>
+      <p>View lost pets reported by others nearby.</p>
+      <a href="{{ url_for('owner.lost_pet_alerts') }}" class="button-primary">View Alerts</a>
+    </div>
+  </div>
+
+  <!-- My Reported Pets -->
+  <h3>My Reported Pets</h3>
+  {% if my_lost_pets %}
+  <div class="grid">
+      {% for pet in my_lost_pets %}
+      <div class="card p-3">
+        <img src="{{ url_for('static', filename='uploads/' + (pet.image if pet.image else 'default_pet.jpg')) }}" alt="{{ pet.name }}">
+        <h5>{{ pet.name }} ({{ pet.type }})</h5>
+        <span class="status-badge {% if pet.status=='Lost' %}status-lost{% else %}status-found{% endif %}">{{ pet.status }}</span>
+        {% if pet.alert_message %}
+        <p class="text-success"><i class="fa-solid fa-bell"></i> {{ pet.alert_message }}</p>
+        {% endif %}
+        <div class="d-flex gap-2 mt-2">
+          {% if pet.status=='Lost' %}
+          <form action="{{ url_for('owner.mark_found', pet_id=pet.id) }}" method="POST">
+            <button type="submit" class="button-primary">Mark as Found</button>
+          </form>
+          {% endif %}
+          <button class="button-primary" data-bs-toggle="modal" data-bs-target="#petModal{{ pet.id }}">View Details</button>
+        </div>
+      </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="petModal{{ pet.id }}" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">{{ pet.name }} ({{ pet.type }})</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <img src="{{ url_for('static', filename='uploads/' + (pet.image if pet.image else 'default_pet.jpg')) }}">
+              <div class="pet-info">
+                <p><i class="fa-solid fa-dog"></i> <strong>Breed:</strong> {{ pet.breed or 'Unknown' }}</p>
+                <p><i class="fa-solid fa-palette"></i> <strong>Color:</strong> {{ pet.color or 'Unknown' }}</p>
+                <p><i class="fa-solid fa-location-dot"></i> <strong>Last Seen:</strong> {{ pet.last_seen }}</p>
+                <p><i class="fa-solid fa-align-left"></i> <strong>Description:</strong> {{ pet.description or 'No details' }}</p>
+                <p><i class="fa-solid fa-calendar"></i> <strong>Reported On:</strong> {{ pet.created_at.strftime('%d %b %Y, %H:%M') }}</p>
+                <p><i class="fa-solid fa-circle"></i> <strong>Status:</strong> 
+                  <span class="status-badge {% if pet.status=='Lost' %}status-lost{% else %}status-found{% endif %}">{{ pet.status }}</span>
+                </p>
+                {% if pet.alert_message %}
+                <p class="text-success"><i class="fa-solid fa-bell"></i> {{ pet.alert_message }}</p>
+                {% endif %}
+              </div>
+            </div>
+            <div class="modal-footer">
+              {% if pet.status=='Lost' %}
+              <form action="{{ url_for('owner.mark_found', pet_id=pet.id) }}" method="POST">
+                <button type="submit" class="button-primary">Mark as Found</button>
+              </form>
+              {% endif %}
+              <button type="button" class="button-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+  </div>
+  {% else %}
+  <p>No lost pets reported by you yet.</p>
+  {% endif %}
+
+  <!-- Other Owners' Lost Pets -->
+  <h3 class="mt-5">Other Lost Pets</h3>
+  {% if other_lost_pets %}
+  <div class="grid">
+      {% for pet in other_lost_pets %}
+      <div class="card p-3">
+        <img src="{{ url_for('static', filename='uploads/' + (pet.image if pet.image else 'default_pet.jpg')) }}" alt="{{ pet.name }}">
+        <h5>{{ pet.name }} ({{ pet.type }})</h5>
+        <p><strong>Owner:</strong> {{ pet.owner_name }}</p>
+        <span class="status-badge {% if pet.status=='Lost' %}status-lost{% else %}status-found{% endif %}">{{ pet.status }}</span>
+        {% if pet.status=='Found' %}
+        <p class="text-success"><i class="fa-solid fa-bell"></i> This pet has been found!</p>
+        {% endif %}
+        <div class="d-flex gap-2 mt-2">
+          <button class="button-primary" data-bs-toggle="modal" data-bs-target="#otherPetModal{{ pet.id }}">View Details</button>
+        </div>
+      </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="otherPetModal{{ pet.id }}" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">{{ pet.name }} ({{ pet.type }})</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <img src="{{ url_for('static', filename='uploads/' + (pet.image if pet.image else 'default_pet.jpg')) }}" class="mb-3">
+              <p><strong>Breed:</strong> {{ pet.breed or 'Unknown' }}</p>
+              <p><strong>Color:</strong> {{ pet.color or 'Unknown' }}</p>
+              <p><strong>Last Seen:</strong> {{ pet.last_seen }}</p>
+              <p><strong>Owner:</strong> {{ pet.owner_name }}</p>
+              {% if pet.status=='Found' %}
+              <p class="text-success"><i class="fa-solid fa-bell"></i> This pet has been found!</p>
+              {% endif %}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="button-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+  </div>
+  {% else %}
+  <p>No lost pets reported by others nearby.</p>
+  {% endif %}
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

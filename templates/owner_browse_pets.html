@@ -1,0 +1,9 @@
+<h2>Find Pets</h2>
+{% for pet in pets %}
+<div class="card">
+  <p><strong>Pet:</strong> {{ pet.name }}</p>
+  <p><strong>Breed:</strong> {{ pet.breed }}</p>
+  <p><strong>Owner:</strong> {{ pet.owner.name }}</p>
+  <a href="{{ url_for('owner.request_playdate', with_pet_id=pet.id) }}">Request Playdate</a>
+</div>
+{% endfor %}

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Availability - Pet Sitter</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 40px;
+    }
+    .card {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      background: #fff;
+      overflow: hidden;
+    }
+    .card-header {
+      background: #ff6f61;
+      color: white;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      padding: 1rem;
+    }
+    .btn-custom {
+      background: #ff6f61;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .btn-custom:hover {
+      background: #e55347;
+      transform: scale(1.05);
+    }
+    .btn-back {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .btn-back:hover {
+      background: #5a6268;
+      transform: scale(1.05);
+    }
+    .table thead {
+      background: #ff6f61;
+      color: #fff;
+    }
+    .form-section {
+      padding: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    .table-responsive {
+      margin-top: 20px;
+    }
+    .top-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">Manage Your Availability</div>
+
+    <!-- Top Buttons -->
+    <div class="top-actions p-3">
+      <a href="{{ url_for('sitter.dashboard') }}" class="btn btn-back">← Back to Dashboard</a>
+    </div>
+
+    <!-- Add Availability Form -->
+    <div class="form-section">
+      <form method="POST" action="{{ url_for('sitter.set_availability') }}">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label>Date</label>
+            <input type="date" name="date" class="form-control" required>
+          </div>
+          <div class="col-md-3">
+            <label>Start Time</label>
+            <input type="time" name="start_time" class="form-control" required>
+          </div>
+          <div class="col-md-3">
+            <label>End Time</label>
+            <input type="time" name="end_time" class="form-control" required>
+          </div>
+          <div class="col-md-3">
+            <label>Notes</label>
+            <input type="text" name="notes" class="form-control">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-custom mt-3 w-100">Add Availability</button>
+      </form>
+    </div>
+
+    <!-- Availability Table -->
+    <div class="table-responsive p-3">
+      {% if availability_list and availability_list|length > 0 %}
+      <table class="table table-striped table-bordered align-middle">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Notes</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for slot in availability_list %}
+          <tr>
+            <td>{{ slot.date }}</td>
+            <td>{{ slot.start_time }}</td>
+            <td>{{ slot.end_time }}</td>
+            <td>{{ slot.notes if slot.notes else '-' }}</td>
+            <td>
+              <form action="{{ url_for('sitter.delete_availability', id=slot.id) }}" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <p class="text-center text-muted">No availability slots added yet.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</body>
+</html>

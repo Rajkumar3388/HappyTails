@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    body {
+        background: #ffeedd;
+        background-image: url("{{ url_for('static', filename='images/paw_pattern.png') }}");
+        background-repeat: repeat;
+        background-size: 100px 100px;
+    }
+
+    .card {
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        background-color: rgba(255, 255, 255, 0.95);
+    }
+
+    .btn-gradient {
+        background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+        border: none;
+        color: white;
+        font-weight: bold;
+        font-size: 1.1rem;
+        border-radius: 50px;
+    }
+</style>
+
+<div class="container mt-5">
+
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold" style="color:#4B9CD3;">
+            🐾 {{ 'Edit Pet' if pet else 'Add Your Pet' }}
+        </h2>
+        <p class="lead text-muted">
+            {{ 'Update your pet details below' if pet else 'Fill in your pet\'s details and add a photo' }}
+        </p>
+    </div>
+
+    <!-- Card -->
+    <div class="card mx-auto shadow-lg p-4" style="max-width: 600px;">
+        <form action="{{ url_for('owner.edit_pet', pet_id=pet.id) if pet else url_for('owner.add_pet') }}" 
+              method="POST" enctype="multipart/form-data">
+
+            <!-- Pet Name -->
+            <div class="mb-3">
+                <label for="name" class="form-label fw-semibold">Pet Name</label>
+                <input type="text" class="form-control rounded-pill" id="name" name="name" 
+                       placeholder="Enter your pet's name" 
+                       value="{{ pet.name if pet else '' }}" required>
+            </div>
+
+            <!-- Breed -->
+            <div class="mb-3">
+                <label for="breed" class="form-label fw-semibold">Breed</label>
+                <input type="text" class="form-control rounded-pill" id="breed" name="breed" 
+                       placeholder="Enter your pet's breed" 
+                       value="{{ pet.breed if pet else '' }}" required>
+            </div>
+
+            <!-- Age -->
+            <div class="mb-3">
+                <label for="age" class="form-label fw-semibold">Age (Years)</label>
+                <input type="number" class="form-control rounded-pill" id="age" name="age" 
+                       placeholder="Enter your pet's age" min="0" 
+                       value="{{ pet.age if pet else '' }}" required>
+            </div>
+
+            <!-- Medical History -->
+            <div class="mb-3">
+                <label for="medical_history" class="form-label fw-semibold">Medical History / Notes</label>
+                <textarea class="form-control rounded" id="medical_history" name="medical_history" rows="3" 
+                          placeholder="Optional: Add any medical history or notes">{{ pet.medical_history if pet else '' }}</textarea>
+            </div>
+
+            <!-- Photo Upload -->
+            <div class="mb-4">
+                <label for="image" class="form-label fw-semibold">Pet Photo</label>
+                <input class="form-control rounded-pill" type="file" id="image" name="image" accept="image/*">
+                {% if pet and pet.image %}
+                    <div class="mt-2">
+                        <img src="{{ url_for('static', filename='uploads/' + pet.image) }}" 
+                             alt="Pet Photo" class="img-thumbnail" style="max-height: 120px;">
+                    </div>
+                {% endif %}
+                <div class="form-text">{{ 'Upload new photo to replace current one.' if pet else 'Optional: Upload a photo of your pet.' }}</div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-gradient w-100 py-2">
+                {{ 'Update Pet' if pet else 'Add Pet' }}
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

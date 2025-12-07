@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Booking Requests</h2>
+<table border="1" cellpadding="10">
+  <tr>
+    <th>Pet</th>
+    <th>Owner</th>
+    <th>Start</th>
+    <th>End</th>
+    <th>Status</th>
+    <th>Actions</th>
+  </tr>
+  {% for b in bookings %}
+  <tr>
+    <td>{{ b.pet.name }}</td>
+    <td>{{ b.pet.owner.name }}</td>
+    <td>{{ b.start_date.strftime('%d-%m-%Y %H:%M') }}</td>
+    <td>{{ b.end_date.strftime('%d-%m-%Y %H:%M') }}</td>
+    <td>{{ b.status }}</td>
+    <td>
+      <a href="{{ url_for('sitter.approve_booking', booking_id=b.id) }}">✅ Approve</a>
+      <a href="{{ url_for('sitter.reject_booking', booking_id=b.id) }}">❌ Reject</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

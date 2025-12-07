@@ -1,0 +1,31 @@
+<h2>Pending Sitter Verifications</h2>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>ID Document</th>
+    <th>Selfie</th>
+    <th>Action</th>
+  </tr>
+  {% for sitter in sitters %}
+  <tr>
+    <td>{{ sitter.name }}</td>
+    <td>{{ sitter.email }}</td>
+    <td>
+      {% if sitter.id_document %}
+      <a href="{{ url_for('static', filename='uploads/ids/' ~ sitter.id_document) }}" target="_blank">View ID</a>
+      {% endif %}
+    </td>
+    <td>
+      {% if sitter.selfie_with_id %}
+      <a href="{{ url_for('static', filename='uploads/selfies/' ~ sitter.selfie_with_id) }}" target="_blank">View Selfie</a>
+      {% endif %}
+    </td>
+    <td>
+      <a href="{{ url_for('admin.verify_sitter', sitter_id=sitter.id, action='approved') }}">Approve</a>
+      |
+      <a href="{{ url_for('admin.verify_sitter', sitter_id=sitter.id, action='rejected') }}">Reject</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>

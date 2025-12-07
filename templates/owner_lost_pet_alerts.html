@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lost Pet Alerts</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Animated gradient background */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #f6d365, #fda085, #a1c4fd, #c2e9fb);
+    background-size: 400% 400%;
+    animation: bgShift 20s ease infinite;
+    min-height: 100vh;
+}
+
+@keyframes bgShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Header */
+header {
+    padding: 20px;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+header a { color: #fff; text-decoration: underline; }
+
+/* Grid layout */
+section {
+    padding: 30px;
+    max-width: 1200px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+/* Card colors cycle */
+.card:nth-child(4n+1) { background:#ffd3b6; }
+.card:nth-child(4n+2) { background:#ffaaa5; }
+.card:nth-child(4n+3) { background:#a8e6cf; }
+.card:nth-child(4n+4) { background:#dcedc1; }
+
+.card {
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+/* Buttons */
+.card a.button-link {
+    padding: 10px 18px;
+    border-radius: 12px;
+    background: linear-gradient(45deg,#ff7e5f,#feb47b);
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 12px;
+    transition: transform 0.2s, background 0.3s;
+}
+.card a.button-link:hover {
+    transform: scale(1.05);
+    background: linear-gradient(45deg,#feb47b,#ff7e5f);
+}
+
+/* Sighting boxes */
+.sighting {
+    background: rgba(0,0,0,0.05);
+    padding: 12px 15px;
+    margin-top: 12px;
+    border-left: 5px solid #ff7e5f;
+    border-radius: 10px;
+    transition: transform 0.2s, border-color 0.3s;
+}
+.sighting:hover {
+    transform: translateX(4px);
+    border-color: #feb47b;
+}
+
+/* Status colors */
+.status-lost { color: #e74c3c; font-weight: bold; }
+.status-found { color: #27ae60; font-weight: bold; }
+
+/* Responsive adjustments */
+@media(max-width:768px){
+    section { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📢 Lost Pet Alerts</h1>
+  <p><a href="{{ url_for('owner.lost_found') }}">⬅ Back to Lost & Found</a></p>
+</header>
+
+<section>
+  {% for pet in alerts %}
+  <div class="card">
+    <h2>{{ pet.name }} ({{ pet.type }})</h2>
+    <p><strong>Breed:</strong> {{ pet.breed or 'Unknown' }}</p>
+    <p><strong>Color:</strong> {{ pet.color or 'Unknown' }}</p>
+    <p><strong>Last Seen:</strong> {{ pet.last_seen }}</p>
+    <p><strong>Description:</strong> {{ pet.description or 'No details' }}</p>
+    <p>Status: 
+      <span class="{{ 'status-found' if pet.status=='Found' else 'status-lost' }}">
+        {{ pet.status }}
+      </span>
+    </p>
+    <p><em>Reported on {{ pet.created_at.strftime('%d %b %Y, %H:%M') }}</em></p>
+
+    {% if pet.sightings_count > 0 %}
+    <h4>👀 Sightings ({{ pet.sightings_count }})</h4>
+    {% for s in pet.sightings %}
+      <div class="sighting">
+        <strong>{{ s.helper_name }}</strong> - 📞 <a href="tel:{{ s.helper_phone }}">{{ s.helper_phone }}</a><br>
+        Saw at: <em>{{ s.location or 'unknown location' }}</em><br>
+        Confidence: {{ s.confidence }}%<br>
+        Details: {{ s.details }}<br>
+        Reported on {{ s.created_at.strftime('%d %b %Y, %H:%M') }}
+      </div>
+    {% endfor %}
+    {% else %}
+      <p>No sightings reported yet.</p>
+    {% endif %}
+
+    <a class="button-link" href="{{ url_for('owner.view_lost_pet', pet_id=pet.id) }}">View Details</a>
+  </div>
+  {% else %}
+    <p>No lost pet alerts at the moment.</p>
+  {% endfor %}
+</section>
+
+</body>
+</html>

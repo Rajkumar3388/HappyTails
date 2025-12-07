@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics - Seller</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 30px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .card {
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      background:#fff;
+      margin-bottom: 20px;
+    }
+    .progress {
+      height: 25px;
+      margin-bottom: 10px;
+    }
+    .progress-bar {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="text-center mb-4">Product Analytics</h2>
+
+    {% if analytics %}
+      {% for product in analytics %}
+      <div class="card">
+        <h5>{{ product.name }}</h5>
+
+        <p><strong>Views:</strong> {{ product.views }}</p>
+        <div class="progress">
+          <div class="progress-bar bg-primary" role="progressbar" 
+               style="width: {{ product.views_percent }}%;" 
+               aria-valuenow="{{ product.views_percent }}" aria-valuemin="0" aria-valuemax="100">
+            {{ product.views_percent }}%
+          </div>
+        </div>
+
+        <p><strong>Sales:</strong> {{ product.sales }}</p>
+        <div class="progress">
+          <div class="progress-bar bg-success" role="progressbar" 
+               style="width: {{ product.sales_percent }}%;" 
+               aria-valuenow="{{ product.sales_percent }}" aria-valuemin="0" aria-valuemax="100">
+            {{ product.sales_percent }}%
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-center">No analytics data available yet.</p>
+    {% endif %}
+
+  </div>
+</body>
+</html>

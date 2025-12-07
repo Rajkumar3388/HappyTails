@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background: linear-gradient(135deg, #ffecd2, #fcb69f);
+  min-height: 100vh;
+}
+
+/* Header */
+.dashboard-header {
+  background: linear-gradient(120deg, #ff7e5f, #feb47b);
+  color: white;
+  text-align: center;
+  padding: 60px 20px;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+.dashboard-header h1 {
+  font-size: 3rem;
+  margin: 0;
+  letter-spacing: 1px;
+}
+.dashboard-header p {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  opacity: 0.9;
+}
+
+/* Floating Title */
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #ff7e5f;
+  font-weight: 600;
+  margin: 50px 0 20px;
+  animation: floatTitle 2.5s ease-in-out infinite alternate;
+}
+@keyframes floatTitle {
+  0% { transform: translateY(-5px); }
+  100% { transform: translateY(5px); }
+}
+
+/* Dashboard Container */
+.dashboard-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  margin: 20px auto;
+  max-width: 1200px;
+  padding: 10px;
+}
+
+/* Glassmorphic Card */
+.card {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(12px);
+  border-radius: 25px;
+  width: 290px;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  transition: all 0.35s ease-in-out;
+  border: 1px solid rgba(255,255,255,0.3);
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(120deg, rgba(255,126,95,0.3), rgba(254,180,123,0.3));
+  transform: rotate(25deg);
+  z-index: 0;
+}
+.card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+.card h2 {
+  position: relative;
+  z-index: 1;
+  font-size: 1.5rem;
+  color: #333;
+  margin-top: 0;
+}
+.card p {
+  position: relative;
+  z-index: 1;
+  font-size: 1rem;
+  color: #555;
+  margin: 15px 0;
+}
+
+/* Buttons */
+button {
+  position: relative;
+  z-index: 1;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+.btn-primary {
+  background: linear-gradient(90deg, #ff7e5f, #feb47b);
+  color: white;
+}
+.btn-primary:hover {
+  background: linear-gradient(90deg, #ff9a76, #fdc88e);
+  transform: scale(1.05);
+}
+.btn-secondary {
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  color: white;
+}
+.btn-secondary:hover {
+  background: linear-gradient(90deg, #64b3f4, #c2e59c);
+  transform: scale(1.05);
+}
+.btn-disabled {
+  background: #ccc !important;
+  cursor: not-allowed !important;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  background: #333;
+  color: #fff;
+  padding: 25px;
+  margin-top: 60px;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  letter-spacing: 0.5px;
+}
+</style>
+
+<div class="dashboard-header">
+  <h1>🐾 Welcome, {{ session.get('user_name', 'Pet Sitter') }}!</h1>
+  <p>Manage your profile, services, bookings, and payments seamlessly.</p>
+</div>
+
+<div class="section-title">🐕 Account Overview</div>
+<div class="dashboard-container">
+  <div class="card">
+    <h2>Status</h2>
+    <p>
+      {% if sitter.is_verified %}
+        <span style="color: green; font-weight: bold;">Approved ✅</span>
+      {% elif sitter.verification_status == 'rejected' %}
+        <span style="color: red; font-weight: bold;">Rejected ❌</span>
+      {% else %}
+        <span style="color: orange; font-weight: bold;">Pending ⏳</span>
+      {% endif %}
+    </p>
+    <p>Your account will be fully activated once approved by the admin.</p>
+  </div>
+</div>
+
+<div class="section-title">🐾 Manage Profile & Services</div>
+<div class="dashboard-container">
+  {% set disabled = 'btn-disabled" disabled' if not sitter.is_verified else '' %}
+  <div class="card">
+    <h2>Service Profile</h2>
+    <p>Update your profile details and verification documents.</p>
+    <a href="{{ url_for('sitter.edit_profile') }}">
+      <button class="btn-primary {{ disabled }}">Edit Profile</button>
+    </a>
+  </div>
+  <div class="card">
+    <h2>Dynamic Pricing</h2>
+    <p>Customize rates based on service duration and pet type.</p>
+    <a href="{{ url_for('sitter.set_pricing') }}">
+      <button class="btn-primary {{ disabled }}">Set Pricing</button>
+    </a>
+  </div>
+</div>
+
+<div class="section-title">📅 Bookings & Availability</div>
+<div class="dashboard-container">
+  <div class="card">
+    <h2>Booking Requests</h2>
+    <p>Check and manage incoming booking requests.</p>
+    <a href="{{ url_for('sitter.view_requests') }}">
+      <button class="btn-secondary {{ disabled }}">View Requests</button>
+    </a>
+  </div>
+  <div class="card">
+    <h2>Availability</h2>
+    <p>Set when you’re available to accept new bookings.</p>
+    <a href="{{ url_for('sitter.set_availability') }}">
+      <button class="btn-secondary {{ disabled }}">Set Availability</button>
+    </a>
+  </div>
+</div>
+
+<div class="section-title">💰 Payments & Reviews</div>
+<div class="dashboard-container">
+  <div class="card">
+    <h2>Payments</h2>
+    <p>Track your completed payments and pending payouts.</p>
+    <a href="{{ url_for('sitter.view_payments') }}">
+      <button class="btn-primary {{ disabled }}">View Payments</button>
+    </a>
+  </div>
+  <div class="card">
+    <h2>Reviews</h2>
+    <p>See feedback from pet owners and respond to reviews.</p>
+    <a href="{{ url_for('sitter.manage_reviews') }}">
+      <button class="btn-primary {{ disabled }}">Manage Reviews</button>
+    </a>
+  </div>
+</div>
+
+<footer>
+  © 2025 HappyTails | Designed with ❤️ for Pet Sitters
+</footer>
+
+{% endblock %}

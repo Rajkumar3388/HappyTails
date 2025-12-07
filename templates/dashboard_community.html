@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(135deg, #f6d365, #fda085, #a1c4fd, #c2e9fb);
+    background-size: 400% 400%;
+    animation: bgShift 20s ease infinite;
+    min-height: 100vh;
+  }
+
+  @keyframes bgShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+  }
+
+  .card-img-top {
+    transition: transform 0.3s ease;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+  }
+
+  .card-img-top:hover {
+    transform: scale(1.08);
+  }
+
+  .btn-outline-primary {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: #fff !important;
+    border: none;
+    font-weight: 600;
+    transition: transform 0.2s, background 0.3s;
+  }
+
+  .btn-outline-primary:hover {
+    background: linear-gradient(45deg, #764ba2, #667eea);
+    transform: scale(1.05);
+    color: #fff !important;
+  }
+
+  .card-body {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 0 0 0.75rem 0.75rem;
+  }
+
+  h2, h4 {
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+  }
+
+  .text-muted {
+    color: rgba(255,255,255,0.85) !important;
+  }
+</style>
+
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">🌍 Community Helper Dashboard</h2>
+
+  <!-- Action buttons -->
+  <div class="d-flex justify-content-center gap-3 mb-4">
+    <a href="{{ url_for('community.feed') }}" class="btn btn-success px-4 shadow-sm">
+      📢 Lost Pet Alerts
+    </a>
+  </div>
+
+  <!-- Lost pets section -->
+  <div class="card shadow-lg p-3 border-0" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(15px);">
+    <h4 class="mb-3">🐾 Lost Pets Near You</h4>
+    {% if lost_pets %}
+      <div class="row">
+        {% for pet in lost_pets %}
+        <div class="col-md-4 mb-4">
+          <div class="card h-100 shadow-sm border-0 rounded-3">
+
+            <!-- Pet image with hover zoom -->
+            <img src="{{ url_for('static', filename='uploads/' + (pet.image if pet.image else 'default_pet.jpg')) }}" 
+                 class="card-img-top" alt="{{ pet.name }}" 
+                 style="height:220px; object-fit:cover;">
+
+            <div class="card-body">
+              <h5 class="card-title">{{ pet.name }}</h5>
+              <p class="text-muted mb-1"><b>Type:</b> {{ pet.type if pet.type else 'N/A' }}</p>
+              <p class="text-muted mb-1"><b>Last Seen:</b> {{ pet.last_seen if pet.last_seen else 'N/A' }}</p>
+              <p class="text-muted"><b>Reward:</b> {{ pet.reward if pet.reward else 'No reward' }} ₹</p>
+
+              <a href="{{ url_for('community.report_sighting', pet_id=pet.id) }}" 
+                 class="btn btn-outline-primary w-100 mt-2">
+                🚨 Report Sighting
+              </a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center text-white-50">No lost pets available right now. Stay tuned!</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

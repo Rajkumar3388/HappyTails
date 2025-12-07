@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+/* Your existing CSS */
+body { font-family: 'Poppins', sans-serif; background: #f9f7ff; margin:0; }
+header { 
+    background: linear-gradient(90deg, #ff9a9e, #fad0c4); 
+    padding: 25px; 
+    color: #fff; 
+    text-align: center; 
+    border-bottom-left-radius: 20px; 
+    border-bottom-right-radius: 20px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+header h1 { margin: 0; font-size: 2rem; }
+header a { color: #fff; text-decoration: underline; font-weight: 500; }
+
+section { 
+    padding: 40px 20px; 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+    gap: 25px; 
+}
+
+.card {
+    background: #fff; 
+    border-radius: 15px; 
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1); 
+    padding: 20px; 
+    text-align: center;
+    transition: all 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+
+.card img {
+    max-width: 100%;
+    height: 200px;
+    object-fit: contain;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.card h2 { color: #ff4b6e; margin-bottom: 8px; font-size: 1.4rem; }
+.card p { color: #555; font-size: 0.95rem; margin: 5px 0; }
+
+.review {
+    background: #f3f3f3; 
+    border-radius: 10px; 
+    padding: 10px 15px; 
+    margin-top: 10px;
+}
+.review p { margin: 5px 0; }
+
+form input[type="submit"] {
+    background: linear-gradient(90deg, #ff4b6e, #ff758c);
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+form input[type="submit"]:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+form textarea {
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    resize: vertical;
+}
+</style>
+
+<header>
+  <h1>🛒 Product Reviews</h1>
+  <p><a href="{{ url_for('owner.dashboard') }}">⬅ Back to Dashboard</a></p>
+</header>
+
+<section>
+  {% for order in orders %}
+  <div class="card">
+    <img src="{{ url_for('static', filename='uploads/' ~ order.product.image) }}" alt="{{ order.product.name }}">
+    <h2>{{ order.product.name }}</h2>
+    <p>Price: ₹{{ order.product.price }}</p>
+    <p>Quantity: {{ order.quantity }}</p>
+
+    {% if order.user_review %}
+        <!-- Show existing review -->
+        <div class="review">
+            <p>⭐ {{ order.user_review.rating }}/5</p>
+            <p>{{ order.user_review.review_text }}</p>
+        </div>
+    {% elif order.show_form %}
+        <!-- Show review form -->
+        <form method="POST" action="{{ url_for('owner.product_reviews') }}">
+            <input type="hidden" name="action" value="submit_review">
+            <input type="hidden" name="product_id" value="{{ order.product.id }}">
+            <p><strong>Give your rating:</strong></p>
+            {% for i in range(1,6) %}
+                <label>
+                    <input type="radio" name="rating" value="{{ i }}" required> {{ i }}⭐
+                </label>
+            {% endfor %}
+            <textarea name="review" placeholder="Write your review..." rows="3" required></textarea>
+            <input type="submit" value="Submit Review">
+        </form>
+    {% else %}
+        <!-- Show Give Rating button -->
+        <form method="POST" action="{{ url_for('owner.product_reviews') }}">
+            <input type="hidden" name="action" value="show_form">
+            <input type="hidden" name="product_id" value="{{ order.product.id }}">
+            <input type="submit" value="Give Rating">
+        </form>
+    {% endif %}
+
+  </div>
+  {% else %}
+  <p>No purchased products yet!</p>
+  {% endfor %}
+</section>
+{% endblock %}

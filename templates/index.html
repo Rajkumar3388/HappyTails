@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Full-width hero */
+.hero {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  text-align: center;
+  color: #fff;
+  background: url('https://images.unsplash.com/photo-1592194996308-7b43878e84a6?auto=format&fit=crop&w=1950&q=80') center/cover no-repeat;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top:0; left:0; width:100%; height:100%;
+  background: linear-gradient(135deg, rgba(255,126,95,0.6), rgba(252,166,113,0.6));
+  z-index: 0;
+}
+
+/* Hero content */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  max-width: 1000px;  /* Increase width */
+  padding: 0 20px;    /* Add side padding */
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 4rem;
+  font-weight: 800;
+  text-shadow: 3px 3px 15px rgba(0,0,0,0.5);
+  animation: floatText 2s ease-in-out infinite alternate;
+}
+
+.hero p {
+  font-size: 1.6rem;
+  max-width: 800px;
+  margin: 0 auto 20px;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.4);
+}
+
+/* Buttons */
+.btn-custom {
+  padding: 15px 35px;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  margin: 10px;
+  transition: all 0.3s;
+  font-weight: 600;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.btn-join { background-color: #ff7e5f; color: #fff; border: none; }
+.btn-join:hover { background-color: #eb6750; transform: translateY(-3px); }
+
+.btn-login { background-color: #fff; color: #ff7e5f; border: 2px solid #ff7e5f; }
+.btn-login:hover { background-color: #ff7e5f; color: #fff; transform: translateY(-3px); }
+
+/* Floating pet icons */
+.pet-icon {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  opacity: 0.7;
+  animation: floatPet linear infinite;
+  z-index: 1;
+}
+
+@keyframes floatPet {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0.5; }
+  50% { opacity: 0.9; }
+  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+
+@keyframes floatText {
+  0% { transform: translateY(-50px); opacity: 0; }
+  50% { transform: translateY(0px); opacity: 1; }
+  100% { transform: translateY(-10px); opacity: 1; }
+}
+
+/* Why Choose Section */
+.why-choose {
+  width: 100vw;
+  padding: 100px 20px;
+  background: linear-gradient(120deg, #ffecd2, #fcb69f, #a1c4fd);
+  text-align: center;
+  color: #333;
+}
+
+.why-choose h2 {
+  font-size: 3rem;
+  margin-bottom: 40px;
+  font-weight: 700;
+  animation: floatText 2s ease-in-out infinite alternate;
+}
+
+.why-choose p {
+  max-width: 900px;
+  margin: auto;
+  font-size: 1.3rem;
+  line-height: 1.8;
+}
+
+/* Footer full width */
+footer {
+  width: 100vw;
+  padding: 30px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #bb812f, #fcb69f, #16a0d2);
+  color: #fff;
+  font-weight: 500;
+  box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2.8rem; }
+  .hero p { font-size: 1.2rem; max-width: 90%; }
+  .btn-custom { padding: 12px 25px; font-size: 1rem; }
+  .why-choose h2 { font-size: 2.2rem; }
+  .why-choose p { font-size: 1.1rem; }
+}
+</style>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>🐾 Welcome to HappyTails</h1>
+    <p>Connecting pets, owners, and communities with love and care.</p>
+    <div>
+      <a href="{{ url_for('auth.register') }}" class="btn btn-custom btn-join">Join Now</a>
+      <a href="{{ url_for('auth.login') }}" class="btn btn-custom btn-login">Login</a>
+    </div>
+  </div>
+
+  <!-- Floating pets -->
+  <img src="https://img.icons8.com/emoji/48/dog-emoji.png" class="pet-icon" style="left:5%; animation-duration:12s;">
+  <img src="https://img.icons8.com/emoji/48/cat-emoji.png" class="pet-icon" style="left:25%; animation-duration:14s;">
+  <img src="https://img.icons8.com/emoji/48/bird-emoji.png" class="pet-icon" style="left:45%; animation-duration:16s;">
+  <img src="https://img.icons8.com/emoji/48/rabbit-emoji.png" class="pet-icon" style="left:65%; animation-duration:18s;">
+  <img src="https://img.icons8.com/emoji/48/hamster-emoji.png" class="pet-icon" style="left:85%; animation-duration:20s;">
+</div>
+
+<div class="why-choose">
+  <h2>Why Choose HappyTails?</h2>
+  <p>
+    HappyTails is a community-driven platform where pet owners can connect, find trusted pet sitters, organize playdates, and shop for quality pet products. 
+    Our mission is to make pet care easier, safer, and more enjoyable. Join us today and give your furry friends the love and care they deserve!
+  </p>
+</div>
+
+{% endblock %}

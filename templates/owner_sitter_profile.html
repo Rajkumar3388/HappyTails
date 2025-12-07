@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+h1 { color: #ff4b6e; text-align:center; }
+p { font-size: 1rem; color: #555; }
+</style>
+
+<div class="container">
+    <h1>{{ sitter.name }}</h1>
+    <p><b>Email:</b> {{ sitter.email }}</p>
+    <p><b>Phone:</b> {{ sitter.phone }}</p>
+    <p><b>Description:</b> {{ sitter.description or "Trusted pet sitter near you" }}</p>
+    <p><b>Services:</b>
+        {% if sitter.service_types %}
+            {{ sitter.service_types | join(', ') }}
+        {% else %}
+            Not specified
+        {% endif %}
+    </p>
+    <p><b>Status:</b> {{ sitter.display_status() }}</p>
+
+    <h3>Reviews</h3>
+    {% if reviews %}
+        <ul>
+        {% for review in reviews %}
+            <li><b>{{ review.owner_name }}:</b> {{ review.rating }}/5 - {{ review.comment }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No reviews yet.</p>
+    {% endif %}
+
+    <a href="{{ url_for('owner.find_sitters') }}">⬅ Back to Sitters</a>
+</div>
+{% endblock %}

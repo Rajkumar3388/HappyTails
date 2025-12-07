@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">👤 Guest Dashboard</h2>
+<div class="card p-3 shadow-sm">
+  <p>Browse pets, sitters, and products. Register to unlock all features.</p>
+  <a href="{{ url_for('auth.register') }}" class="btn btn-warning">Upgrade to Member</a>
+</div>
+{% endblock %}

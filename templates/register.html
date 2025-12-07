@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f6d365, #fda085, #a1c4fd);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+
+/* Page Container */
+.page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Card */
+.card {
+    background: rgba(255,255,255,0.95);
+    border-radius: 25px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    padding: 40px;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+/* Headings */
+.card h2 {
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+/* Inputs */
+.form-control, .form-select {
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    transition: all 0.3s;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 8px rgba(102,126,234,0.3);
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+.btn-primary:hover {
+    background: linear-gradient(45deg, #764ba2, #667eea);
+    transform: translateY(-2px);
+}
+
+/* Footer text */
+.card p {
+    margin-top: 15px;
+    font-size: 0.95em;
+}
+.card a {
+    color: #667eea;
+    font-weight: 500;
+}
+.card a:hover {
+    text-decoration: underline;
+}
+</style>
+
+<div class="page-container">
+  <div class="card">
+    <h2>🐾 Happy Tails</h2>
+    <form method="POST" action="{{ url_for('auth.register') }}">
+      <div class="mb-3">
+        <input type="text" name="name" class="form-control" placeholder="Full Name" required>
+      </div>
+      <div class="mb-3">
+        <input type="email" name="email" class="form-control" placeholder="Email" required>
+      </div>
+      <div class="mb-3">
+        <input type="text" name="mobile" class="form-control" placeholder="Mobile Number" pattern="[0-9]{10}" maxlength="10" required>
+      </div>
+      <div class="mb-3">
+        <input type="password" name="password" class="form-control" placeholder="Password" required>
+      </div>
+      <div class="mb-3">
+        <select name="role" class="form-select" required>
+          <option value="owner">Pet Owner</option>
+          <option value="sitter">Pet Sitter</option>
+          <option value="seller">Seller</option>
+          <option value="community">Community Helper</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Create Account</button>
+    </form>
+    <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
+  </div>
+</div>
+{% endblock %}

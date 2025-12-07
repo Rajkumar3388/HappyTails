@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+body { font-family: 'Poppins', sans-serif; background: #f4f6f9; margin: 0; }
+header { 
+    background: linear-gradient(135deg, #ff758c, #ffb199); 
+    padding: 30px 20px; 
+    color: #fff; 
+    text-align: center; 
+    border-bottom-left-radius: 20px; 
+    border-bottom-right-radius: 20px; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+header h1 { margin: 0; font-size: 2.2rem; }
+header a { 
+    color: #fff; 
+    text-decoration: none; 
+    font-weight: 600; 
+    background: rgba(0,0,0,0.2); 
+    padding: 5px 15px; 
+    border-radius: 12px; 
+    transition: 0.3s;
+}
+header a:hover { background: rgba(0,0,0,0.3); }
+
+.container { max-width: 1000px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+
+.card {
+    background: #fff; 
+    border-radius: 20px; 
+    padding: 25px 20px; 
+    text-align: center; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+    transition: all 0.4s ease;
+}
+.card:hover { 
+    transform: translateY(-10px) scale(1.05); 
+    box-shadow: 0 20px 35px rgba(0,0,0,0.2); 
+}
+.card-icon {
+    width: 80px; 
+    height: 80px; 
+    margin: 0 auto 15px auto; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border-radius: 50%; 
+    background: linear-gradient(135deg, #ff758c, #ffb199); 
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+.card-icon img { width: 50px; height: 50px; }
+
+.card h2 { margin: 15px 0 10px; color: #ff4b6e; }
+.card p { color: #555; font-size: 0.95rem; line-height: 1.4; }
+
+.button {
+    display: inline-block; 
+    margin-top: 15px; 
+    padding: 12px 25px; 
+    border-radius: 12px; 
+    background: linear-gradient(135deg, #6a11cb, #2575fc); 
+    color: #fff; 
+    font-weight: 600; 
+    text-decoration: none; 
+    transition: 0.3s;
+}
+.button:hover { opacity: 0.9; }
+
+@media(max-width:600px){ .container{ grid-template-columns: 1fr; } }
+</style>
+
+<header>
+  <h1>📦 Subscriptions</h1>
+  <p><a href="{{ url_for('owner.dashboard') }}">⬅ Back to Dashboard</a></p>
+</header>
+
+<div class="container">
+
+  <!-- My Subscriptions -->
+  <div class="card">
+    <div class="card-icon">
+      <img src="https://img.icons8.com/color/96/000000/recurring-appointment.png" alt="My Subscriptions">
+    </div>
+    <h2>My Subscriptions</h2>
+    <p>View and manage your recurring deliveries like pet food, toys, and other essentials. Keep track of your active plans and delivery schedules.</p>
+    <a href="{{ url_for('owner.subscription') }}" class="button">View Subscriptions</a>
+  </div>
+
+  <!-- Subscribe to New Plan -->
+  <div class="card">
+    <div class="card-icon">
+      <img src="https://img.icons8.com/emoji/96/000000/plus-emoji.png" alt="New Plan">
+    </div>
+    <h2>Subscribe to a New Plan</h2>
+    <p>Choose products and set the frequency for recurring deliveries. Never run out of your pet’s favorite items!</p>
+    <a href="{{ url_for('owner.subscription') }}" class="button">Subscribe Now</a>
+  </div>
+
+</div>
+{% endblock %}

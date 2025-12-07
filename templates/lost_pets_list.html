@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lost Pets List</title>
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg,#ffecd2,#fcb69f,#a1c4fd,#c2e9fb);
+  background-size: 400% 400%;
+  animation: gradientBG 10s ease infinite;
+  margin:0; padding:0;
+}
+@keyframes gradientBG {
+  0% {background-position:0% 50%;}
+  50% {background-position:100% 50%;}
+  100% {background-position:0% 50%;}
+}
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  background: rgba(255,255,255,0.7);
+  border-radius: 20px;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+h1 { text-align:center; margin-bottom:30px; }
+.pet-card {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:15px; margin-bottom:15px;
+  background: rgba(255,255,255,0.9); border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+.pet-info { flex:1; }
+.pet-color {
+  width:30px; height:30px; border-radius:50%;
+  border:2px solid #667eea; margin-left:10px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🐾 Lost Pets List</h1>
+  {% for pet in pets %}
+    <div class="pet-card">
+      <div class="pet-info">
+        <strong>{{ pet.name }}</strong> ({{ pet.type }}) - Last seen: {{ pet.last_seen }}
+        <p>{{ pet.description }}</p>
+      </div>
+      <div class="pet-color" style="background:{{ pet.color }}"></div>
+    </div>
+  {% else %}
+    <p>No lost pets reported yet.</p>
+  {% endfor %}
+</div>
+</body>
+</html>

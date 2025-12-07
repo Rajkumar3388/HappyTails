@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(120deg, #fddb92, #d1fdff);
+    padding: 30px;
+    overflow-x: hidden;
+}
+.section-title {
+    text-align:center;
+    font-size:2rem;
+    margin-bottom:30px;
+    color:#ff6f61;
+    animation: floatTitle 2s ease-in-out infinite alternate;
+}
+@keyframes floatTitle {
+    0% { transform: translateY(-10px); }
+    50% { transform: translateY(0px); }
+    100% { transform: translateY(-5px); }
+}
+.dashboard-container {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:25px;
+}
+.card {
+    background: linear-gradient(135deg,#ffecd2,#fcb69f);
+    border-radius:20px;
+    width:300px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+}
+.card:hover {
+    transform:translateY(-8px);
+    box-shadow:0 15px 25px rgba(0,0,0,0.25);
+    background: linear-gradient(135deg,#fbc2eb,#a6c1ee);
+}
+.card h5 { font-size:1.2rem; margin-bottom:10px; }
+.card p { font-size:0.95rem; color:#444; }
+.btn-custom {
+    padding:8px 18px;
+    border:none;
+    border-radius:25px;
+    font-size:0.9rem;
+    cursor:pointer;
+    margin:5px;
+    transition: all 0.3s;
+}
+.btn-primary { background:#ff6f61; color:#fff; }
+.btn-primary:hover { background:#e55347; }
+.btn-warning { background:#f0ad4e; color:#fff; }
+.btn-warning:hover { background:#ec9d40; }
+.btn-danger { background:#d9534f; color:#fff; }
+.btn-danger:hover { background:#c9302c; }
+.add-campaign { display:block; width:200px; margin:0 auto 30px auto; text-align:center; }
+@media (max-width: 768px) {
+    .dashboard-container { flex-direction: column; align-items: center; }
+    .card { width:90%; }
+}
+</style>
+
+<div class="section-title">Promotional Campaigns</div>
+
+<div class="add-campaign">
+    <a href="{{ url_for('seller.add_campaign') }}" class="btn btn-primary">+ Add New Campaign</a>
+</div>
+
+<div class="dashboard-container">
+    {% for campaign in campaigns %}
+    <div class="card">
+        <h5>{{ campaign.name }}</h5>
+        <p><b>Discount:</b> {{ campaign.discount }}%</p>
+        {% if campaign.description %}
+        <p>{{ campaign.description }}</p>
+        {% endif %}
+        <p><b>Start:</b> {{ campaign.start_date.strftime('%Y-%m-%d') }}</p>
+        <p><b>End:</b> {{ campaign.end_date.strftime('%Y-%m-%d') }}</p>
+        <p><b>Created:</b> {{ campaign.created_at.strftime('%Y-%m-%d') }}</p>
+        <div>
+            <!-- Edit route removed since we don’t have edit -->
+            <form action="{{ url_for('seller.delete_campaign', id=campaign.id) }}" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if campaigns|length == 0 %}
+    <p class="text-center" style="width:100%; font-size:1.2rem; color:#333;">No campaigns found.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

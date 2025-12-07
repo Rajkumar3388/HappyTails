@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    min-height: 100vh;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+header {
+    text-align: center;
+    padding: 60px 20px 20px;
+}
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    -webkit-text-fill-color: transparent;
+}
+header a {
+    color: #bbb;
+    text-decoration: none;
+    font-size: 1rem;
+    border-bottom: 2px solid transparent;
+}
+header a:hover {
+    color: #00c6ff;
+    border-bottom: 2px solid #00c6ff;
+}
+
+.container {
+    width: 90%;
+    max-width: 500px;
+    background: rgba(255,255,255,0.08);
+    padding: 30px;
+    margin-top: 30px;
+    border-radius: 20px;
+    text-align: center;
+    backdrop-filter: blur(15px);
+}
+
+h2 { color: #00e6ff; margin-bottom: 15px; }
+textarea {
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
+    resize: none;
+    font-size: 0.95rem;
+}
+
+button {
+    background: linear-gradient(90deg, #0072ff, #00c6ff);
+    border: none;
+    color: #fff;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+button:hover { transform: scale(1.05); }
+
+.stars {
+    display: flex;
+    flex-direction: row-reverse; /* Reverse for proper hover effect */
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.stars input {
+    display: none;
+}
+
+.stars label {
+    font-size: 35px;
+    color: #ccc; /* default gray */
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+/* Hover effect: highlight stars up to hover */
+.stars label:hover,
+.stars label:hover ~ label {
+    color: gold;
+}
+
+/* Only checked stars are gold */
+.stars input:checked + label,
+.stars input:checked + label ~ label {
+    color: gold;
+}
+</style>
+
+<header>
+    <h1>Rate Pet Sitter</h1>
+    <p>
+        <a href="{{ url_for('owner.find_sitters') }}">⬅ Back to All Sitters</a>
+    </p>
+</header>
+
+<div class="container">
+    <h2>{{ sitter.name }}</h2>
+    <form method="POST" action="{{ url_for('owner.submit_rating', sitter_id=sitter.id) }}">
+        <div class="stars">
+            {% for i in range(5,0,-1) %}
+                <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" required>
+                <label for="star{{ i }}">⭐</label>
+            {% endfor %}
+        </div>
+
+        <textarea name="review" rows="4" placeholder="Leave your comment here..."></textarea>
+        <br>
+        <button type="submit">Submit Rating</button>
+    </form>
+</div>
+{% endblock %}

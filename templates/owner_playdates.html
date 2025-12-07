@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playdates</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Body & Background ===== */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #fff0f6, #ffe4e1);
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Animated paw prints background */
+@keyframes floatPaws {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0.6; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+.paw {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: url('https://cdn-icons-png.flaticon.com/512/616/616408.png') no-repeat center/contain;
+    animation: floatPaws linear infinite;
+}
+.paw:nth-child(1) { left: 10%; animation-duration: 12s; }
+.paw:nth-child(2) { left: 30%; animation-duration: 15s; animation-delay: 2s; }
+.paw:nth-child(3) { left: 50%; animation-duration: 18s; animation-delay: 4s; }
+.paw:nth-child(4) { left: 70%; animation-duration: 20s; animation-delay: 6s; }
+.paw:nth-child(5) { left: 90%; animation-duration: 16s; animation-delay: 8s; }
+
+/* Header */
+header {
+    background: linear-gradient(90deg, #ff758c, #ffb199);
+    padding: 25px;
+    text-align: center;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 1;
+}
+header h1 { margin: 0; font-size: 2rem; }
+header a { color: #fff; text-decoration: underline; font-size: 0.9rem; }
+
+/* Section */
+section { padding: 30px; max-width: 1000px; margin: auto; position: relative; z-index: 1; }
+
+/* Card Styles */
+.card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    padding: 25px;
+    margin-bottom: 25px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+}
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+/* Pet Avatar */
+.pet-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ff758c;
+    margin-right: 15px;
+    transition: transform 0.3s ease;
+}
+.pet-image:hover {
+    transform: scale(1.1) rotate(-10deg);
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.card-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Status */
+.status {
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 25px;
+    color: #fff;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+.status.Pending { background-color: #f0ad4e; }
+.status.Accepted { background-color: #5cb85c; }
+.status.Declined { background-color: #d9534f; }
+
+/* Buttons */
+.actions a {
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 15px;
+    color: #fff;
+    font-size: 0.9rem;
+    margin-right: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.actions a.accept { background: linear-gradient(135deg,#56ab2f,#a8e063); }
+.actions a.decline { background: linear-gradient(135deg,#e53935,#ff6f61); }
+.actions a.delete { background: linear-gradient(135deg,#ff416c,#ff4b2b); }
+.actions a:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* Flash message */
+.flash {
+    background: #d4edda;
+    color: #155724;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+/* Search bar */
+.search-bar {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+.search-bar input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+}
+.search-bar button {
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg,#ff758c,#ffb199);
+    color: #fff;
+    cursor: pointer;
+}
+.search-bar button:hover { background: linear-gradient(135deg,#ff92a5,#ffc1b3); }
+
+/* Headings */
+h2 {
+    margin-top: 40px;
+    margin-bottom: 20px;
+    color: #ff4b6e;
+    font-size: 1.6rem;
+}
+
+/* Form Inputs */
+form input, form select {
+    padding: 12px;
+    margin: 8px 0;
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+form button {
+    padding: 12px 20px;
+    background: linear-gradient(135deg,#ff758c,#ffb199);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+}
+form button:hover { background: linear-gradient(135deg,#ff92a5,#ffc1b3); }
+</style>
+</head>
+<body>
+
+<!-- Paw prints -->
+<div class="paw"></div>
+<div class="paw"></div>
+<div class="paw"></div>
+<div class="paw"></div>
+<div class="paw"></div>
+
+<header>
+  <h1>📅 Playdates</h1>
+  <p><a href="{{ url_for('owner.pets') }}">⬅ Back to Dashboard</a></p>
+</header>
+
+<section>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="search-bar">
+    <form method="GET">
+      <input type="text" name="search" placeholder="🔍 Search by pet or date" value="{{ search or '' }}">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  <h2>🐾 Upcoming Playdates</h2>
+  {% if playdates %}
+    {% for p in playdates %}
+    <div class="card">
+      <div class="card-header">
+        <div style="display:flex; align-items:center;">
+          
+          <h3>{{ p.pet.name }} 🐶 → {{ p.invitee_pet.name }}</h3>
+        </div>
+        <span class="status status-{{ p.status }}">
+          {% if p.status == 'Pending' %}⏳ Waiting{% elif p.status == 'Accepted' %}✅ Accepted{% else %}❌ Declined{% endif %}
+        </span>
+      </div>
+      <p><strong>Date:</strong> {{ p.date }}</p>
+      <p><strong>Time:</strong> {{ p.time }}</p>
+      <p><strong>Location:</strong> {{ p.location }}</p>
+
+      {% if p.status.lower() == 'pending' and owner_id == p.invitee_owner_id %}
+      <p class="actions">
+        <a class="accept" href="{{ url_for('owner.accept_playdate', playdate_id=p.id) }}">✅ Accept</a>
+        <a class="decline" href="{{ url_for('owner.reject_playdate', playdate_id=p.id) }}">❌ Decline</a>
+      </p>
+      {% endif %}
+
+      {% if p.status.lower() == 'pending' and owner_id == p.owner_id %}
+      <p class="actions">
+        <a class="delete" href="{{ url_for('owner.delete_playdate', playdate_id=p.id) }}">🗑️ Delete</a>
+      </p>
+      {% endif %}
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="card"><p>No upcoming playdates yet.</p></div>
+  {% endif %}
+
+  <h2>➕ Request a New Playdate</h2>
+  <div class="card">
+    <form method="POST">
+      <label for="pet_id"><strong>Your Pet</strong></label>
+      <select name="pet_id" id="pet_id" required>
+        <option value="">-- Select Your Pet --</option>
+        {% for pet in my_pets %}
+          <option value="{{ pet.id }}">{{ pet.name }} ({{ pet.breed }})</option>
+        {% endfor %}
+      </select>
+
+      <label for="invitee_pet_id"><strong>Invite Pet</strong></label>
+      <select name="invitee_pet_id" id="invitee_pet_id" required>
+        <option value="">-- Select Friend's Pet --</option>
+        {% for pet in other_pets %}
+          <option value="{{ pet.id }}">{{ pet.name }} (Owner: {{ pet.owner.name }})</option>
+        {% endfor %}
+      </select>
+
+      <label>Date</label>
+      <input type="date" name="date" required>
+      <label>Time</label>
+      <input type="time" name="time" required>
+      <label>Location</label>
+      <input type="text" name="location" placeholder="Enter location" required>
+
+      <button type="submit">📩 Request Playdate</button>
+    </form>
+  </div>
+
+</section>
+</body>
+</html>

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+body { font-family: 'Poppins', sans-serif; background: #f9f7ff; margin: 0; }
+.container { max-width: 1000px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+
+.sitter-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.sitter-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+.sitter-card img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ff4b6e;
+    margin-bottom: 15px;
+}
+.sitter-card h3 {
+    color: #ff4b6e;
+    margin-bottom: 10px;
+}
+.sitter-card p {
+    color: #555;
+    margin-bottom: 10px;
+}
+.sitter-card a {
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 10px;
+    background: #ff4b6e;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+.sitter-card a:hover { opacity: 0.9; }
+
+.service-list {
+    margin-top: 10px;
+}
+.service-list span {
+    display: inline-block;
+    margin: 4px 5px;
+    padding: 4px 10px;
+    background: #ffdde1;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #ff4b6e;
+}
+</style>
+
+<div class="container">
+    {% if sitter_data %}
+        {% for item in sitter_data %}
+        <div class="sitter-card">
+            <img src="{{ url_for('static', filename='uploads/' ~ (item.sitter.profile_image or 'default-avatar.png')) }}" alt="{{ item.sitter.name }}">
+            <h3>{{ item.sitter.name }}</h3>
+            <p>Phone: {{ item.sitter.phone }}</p>
+            <p>Email: {{ item.sitter.email }}</p>
+
+            {% if item.prices %}
+                <p>Starting at ₹{{ item.prices[0].price }}</p>
+                <div class="service-list">
+                    {% for price in item.prices %}
+                        <span>{{ price.service }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No services added yet.</p>
+            {% endif %}
+
+            <a href="{{ url_for('owner.view_sitter_profile', sitter_id=item.sitter.id) }}">View Profile</a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="text-align:center; font-size:1.2rem;">No sitters found 😢</p>
+    {% endif %}
+</div>
+{% endblock %}

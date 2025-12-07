@@ -1,0 +1,13 @@
+<h2>Request Playdate with {{ invitee_pet.name }}</h2>
+<form method="POST">
+  <label>Your Pet:</label>
+  <select name="pet_name" required>
+    {% for pet in my_pets %}
+      <option value="{{ pet.name }}">{{ pet.name }}</option>
+    {% endfor %}
+  </select>
+  <input type="date" name="date" required>
+  <input type="time" name="time" required>
+  <input type="text" name="location" placeholder="Location" required>
+  <button type="submit">Send Request</button>
+</form>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Set Pricing - Sitter</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Animated Gradient Background */
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: #fff;
+    }
+
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    /* Glassmorphism Card */
+    .card {
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-7px) scale(1.03);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    h2, h4 {
+      color: #fff;
+      font-weight: 600;
+      text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+    }
+
+    /* Buttons */
+    .btn-primary, .btn-outline-primary {
+      border-radius: 12px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #ff9a9e, #fad0c4, #a18cd1);
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 15px rgba(255,255,255,0.3);
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 25px rgba(255,255,255,0.5);
+    }
+
+    .btn-outline-primary {
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.6);
+    }
+
+    .btn-outline-primary:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border-color: #fff;
+    }
+
+    /* Alerts */
+    .alert {
+      border-radius: 12px;
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      border: none;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Tables */
+    table {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      color: #fff;
+    }
+
+    table th, table td {
+      vertical-align: middle;
+      color: #fff;
+    }
+
+    table th {
+      border-bottom: 2px solid rgba(255,255,255,0.3);
+    }
+
+    table td {
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    input::placeholder {
+      color: rgba(255,255,255,0.7);
+    }
+  </style>
+</head>
+<body>
+<div class="container mt-5 mb-5">
+
+  <!-- Back to Dashboard -->
+  <div class="mb-4 text-start">
+      <a href="{{ url_for('sitter.dashboard') }}" class="btn btn-outline-primary">
+          ← Back to Dashboard
+      </a>
+  </div>
+
+  <div class="card shadow p-5">
+    <h2 class="text-center mb-4">Set Pricing</h2>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Add Pricing Rule -->
+    <form method="POST" action="{{ url_for('sitter.add_pricing') }}" class="row g-3 mb-4">
+      <div class="col-md-3">
+        <label class="form-label">Service</label>
+        <input type="text" name="service_name" class="form-control" placeholder="e.g., Walking" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Pet Size</label>
+        <select name="pet_size" class="form-control" required>
+          <option value="Small">Small</option>
+          <option value="Medium">Medium</option>
+          <option value="Large">Large</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Duration (min)</label>
+        <input type="number" name="duration" class="form-control" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Special Needs</label>
+        <select name="special_needs" class="form-control">
+          <option value="No">No</option>
+          <option value="Yes">Yes</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Price (₹)</label>
+        <input type="number" name="price" class="form-control" required>
+      </div>
+      <div class="col-md-1 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Add</button>
+      </div>
+    </form>
+
+    <hr>
+
+    <!-- Existing Pricing Rules -->
+    <h4>Pricing Rules</h4>
+    {% if pricing_rules %}
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Service</th>
+          <th>Pet Size</th>
+          <th>Duration</th>
+          <th>Special Needs</th>
+          <th>Price (₹)</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for rule in pricing_rules %}
+        <tr>
+          <form method="POST" action="{{ url_for('sitter.update_pricing', id=rule.id) }}">
+            <td>{{ loop.index }}</td>
+            <td><input type="text" name="service_name" value="{{ rule.service_name }}" class="form-control"></td>
+            <td>
+              <select name="pet_size" class="form-control">
+                <option {% if rule.pet_size == 'Small' %}selected{% endif %}>Small</option>
+                <option {% if rule.pet_size == 'Medium' %}selected{% endif %}>Medium</option>
+                <option {% if rule.pet_size == 'Large' %}selected{% endif %}>Large</option>
+              </select>
+            </td>
+            <td><input type="number" name="duration" value="{{ rule.duration }}" class="form-control"></td>
+            <td>
+              <select name="special_needs" class="form-control">
+                <option value="No" {% if rule.special_needs == 'No' %}selected{% endif %}>No</option>
+                <option value="Yes" {% if rule.special_needs == 'Yes' %}selected{% endif %}>Yes</option>
+              </select>
+            </td>
+            <td><input type="number" name="price" value="{{ rule.price }}" class="form-control"></td>
+            <td>
+              <button type="submit" class="btn btn-sm btn-success mb-1">Update</button>
+              <a href="{{ url_for('sitter.delete_pricing', id=rule.id) }}" class="btn btn-sm btn-danger mb-1">Delete</a>
+            </td>
+          </form>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p>No pricing rules set yet.</p>
+    {% endif %}
+
+    <hr>
+
+    <!-- Display Service Types (Read-only) -->
+    <h4>Service Types (Admin Controlled)</h4>
+    {% if sitter.service_types %}
+      <ul class="list-group">
+        {% for service in sitter.service_types %}
+          <li class="list-group-item">{{ service }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No services added yet by admin.</p>
+    {% endif %}
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

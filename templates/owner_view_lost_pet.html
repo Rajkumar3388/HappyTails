@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ pet.name }} - Lost Pet Details</title>
+<style>
+body { font-family: 'Roboto', sans-serif; margin:0; background:#f9f7ff; }
+header { background: linear-gradient(90deg,#ff9a9e,#fad0c4); padding:20px; color:#fff; text-align:center; }
+header a { color:#fff; text-decoration:underline; }
+section { padding:30px; max-width:900px; margin:auto; }
+.card { background:#fff; border-radius:15px; box-shadow:0 6px 15px rgba(0,0,0,0.1); padding:20px; margin-bottom:20px; }
+.sighting { background:#f0f4ff; padding:8px 12px; margin-top:8px; border-radius:8px; font-size:0.9em; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>{{ pet.name }} ({{ pet.type }}) - Lost Pet Details</h1>
+  <p><a href="{{ url_for('owner.lost_pet_alerts') }}">⬅ Back to Alerts</a></p>
+</header>
+
+<section>
+  <div class="card">
+    <p><strong>Breed:</strong> {{ pet.breed or 'Unknown' }}</p>
+    <p><strong>Color:</strong> {{ pet.color or 'Unknown' }}</p>
+    <p><strong>Last Seen:</strong> {{ pet.last_seen }}</p>
+    <p><strong>Description:</strong> {{ pet.description or 'No details' }}</p>
+    <p>Status: <span class="{{ 'found' if pet.status=='Found' else 'lost' }}">{{ pet.status }}</span></p>
+    <p><em>Reported on {{ pet.created_at.strftime('%d %b %Y, %H:%M') }}</em></p>
+  </div>
+
+  <h3>👀 Sightings ({{ sightings|length }})</h3>
+  {% if sightings %}
+    {% for s in sightings %}
+      <div class="card sighting">
+        <strong>{{ s.helper_name }}</strong> saw the pet at <em>{{ s.location or 'unknown location' }}</em><br>
+        Confidence: {{ s.confidence }}%<br>
+        Details: {{ s.details }}<br>
+        Reported on {{ s.created_at.strftime('%d %b %Y, %H:%M') }}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No sightings reported yet.</p>
+  {% endif %}
+</section>
+
+</body>
+</html>

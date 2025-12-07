@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    min-height: 100vh;
+    color: #fff;
+}
+header {
+    text-align: center;
+    padding: 40px 20px;
+}
+header h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    -webkit-text-fill-color: transparent;
+}
+.table-container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 20px auto;
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+}
+th { color: #00e6ff; }
+td { color: #ccc; }
+.status-badge {
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+}
+.status-pending { background: #ff9800; color: #000; }
+.status-approved { background: #4caf50; color: #fff; }
+.status-rejected { background: #f44336; color: #fff; }
+
+.button-back {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 8px 15px;
+    border-radius: 25px;
+    background: linear-gradient(90deg, #43e97b, #38f9d7);
+    color: #000;
+    text-decoration: none;
+    font-weight: 600;
+}
+.button-back:hover { background: linear-gradient(90deg, #38f9d7, #43e97b); }
+</style>
+
+<header>
+    <h1>📝 My Bookings</h1>
+    <a href="{{ url_for('owner.find_sitters') }}" class="button-back">⬅ Back to Sitters</a>
+</header>
+
+<div class="table-container">
+    {% if bookings %}
+    <table>
+        <thead>
+            <tr>
+                <th>Pet Name</th>
+                <th>Sitter Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.pet.name }}</td>
+                <td>{{ booking.sitter.name }}</td>
+                <td>{{ booking.start_date.strftime("%Y-%m-%d %H:%M") }}</td>
+                <td>{{ booking.end_date.strftime("%Y-%m-%d %H:%M") }}</td>
+                <td>
+                    <span class="status-badge status-{{ booking.status|lower }}">{{ booking.status }}</span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p style="text-align:center; color:#ccc;">You have no bookings yet 😢</p>
+    {% endif %}
+</div>
+{% endblock %}

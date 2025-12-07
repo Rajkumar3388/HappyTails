@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  body {
+    background: linear-gradient(120deg, #fdfbfb, #ebedee);
+    font-family: 'Roboto', sans-serif;
+  }
+
+  .orders-container {
+    padding: 30px;
+    animation: fadeIn 1s ease-in-out;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #6c5ce7, #00b894);
+    -webkit-text-fill-color: transparent;
+    font-size: 2.2em;
+  }
+
+  table {
+    background: #ffffffcc;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  table:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  }
+
+  th, td {
+    vertical-align: middle !important;
+  }
+
+  th {
+    background: linear-gradient(90deg, #6c5ce7, #00b894);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f3f3f3;
+  }
+
+  tr:hover {
+    background-color: #ffeaa7;
+    transition: 0.3s;
+  }
+
+  .badge {
+    font-size: 0.85em;
+    padding: 5px 10px;
+  }
+
+  @keyframes fadeIn {
+    0% {opacity: 0; transform: translateY(20px);}
+    100% {opacity: 1; transform: translateY(0);}
+  }
+
+  .back-shop-btn {
+    margin-bottom: 20px;
+    display: inline-block;
+    background: linear-gradient(90deg, #6c5ce7, #00b894);
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+
+  .back-shop-btn:hover {
+    background: linear-gradient(90deg, #00b894, #6c5ce7);
+    color: #fff;
+  }
+</style>
+  <h2>📦 My Orders</h2>
+
+  <div class="table-responsive">
+    {% if orders %}
+    <table class="table table-bordered align-middle text-center">
+      <thead>
+        <tr>
+          <th>Buyer</th>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Total Price</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>{{ order.buyer.name }}</td>
+          <td>
+            <a href="{{ url_for('owner.product_detail', product_id=order.product.id) }}" style="text-decoration:none; color:#6c5ce7;">
+              {{ order.product.name }}
+            </a>
+          </td>
+          <td>{{ order.quantity }}</td>
+          <td>₹{{ '{:,.2f}'.format(order.total_price) }}</td>
+          <td>
+            {% if order.status == 'pending' %}
+              <span class="badge bg-warning text-dark">Pending</span>
+            {% elif order.status == 'shipped' %}
+              <span class="badge bg-info text-dark">Shipped</span>
+            {% elif order.status == 'delivered' %}
+              <span class="badge bg-success">Delivered</span>
+            {% else %}
+              <span class="badge bg-secondary">{{ order.status }}</span>
+            {% endif %}
+          </td>
+          <td>{{ order.created_at.strftime('%d-%m-%Y') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="text-center text-muted" style="font-size:1.1em;">No orders placed yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

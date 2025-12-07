@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #f0f4f8, #d9e2ec); /* soft gradient */
+}
+
+.report-card {
+  max-width: 500px;
+  margin: 50px auto;
+  background-color: #ffffff; /* white card */
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12); /* subtle shadow */
+  border-left: 5px solid #667eea; /* color accent */
+}
+
+.report-card h3 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #334e68; /* dark soft text */
+}
+
+.form-label {
+  color: #334e68;
+  font-weight: 500;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #bcccdc;
+  margin-bottom: 15px;
+  font-size: 1em;
+  background-color: #f0f4f8; /* input background */
+}
+
+.form-control:focus {
+  border-color: #667eea;
+  outline: none;
+  box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary, .btn-secondary {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 12px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.btn-primary {
+  background-color: #667eea;
+  color: #fff;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #5a67d8;
+}
+
+.btn-secondary {
+  background-color: #e2e8f0;
+  color: #334e68;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #cbd5e1;
+}
+
+::placeholder {
+  color: #a8bfc9;
+  font-style: italic;
+}
+</style>
+
+<div class="report-card">
+  <h3>👀 Report Sighting for {{ pet.name }}</h3>
+  <form method="POST">
+
+    <label class="form-label">Confidence Level (%)</label>
+    <input type="number" name="confidence" class="form-control" required min="1" max="100" placeholder="Enter your confidence (1-100)">
+
+    <label class="form-label">Location</label>
+    <input type="text" name="location" class="form-control" required placeholder="Where did you see the pet?">
+
+    <label class="form-label">Details</label>
+    <textarea name="details" class="form-control" rows="4" placeholder="Describe what you saw..." required></textarea>
+
+    <label class="form-label">Your Phone Number</label>
+    <input type="text" name="phone" class="form-control" required placeholder="Enter your phone number for contact">
+
+    <button type="submit" class="btn btn-primary">Submit Report</button>
+    <a href="{{ url_for('community.feed') }}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

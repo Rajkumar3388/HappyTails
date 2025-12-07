@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(145deg, #eef2f3, #d9e4ec);
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+/* ---------- CARD ---------- */
+.profile-card {
+    max-width: 1000px;
+    margin: auto;
+    background: #fff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+.profile-header img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #4e73df;
+}
+.profile-header .info h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #333;
+}
+.profile-header .info p {
+    margin: 5px 0;
+    color: #555;
+}
+
+/* ---------- DETAILS ---------- */
+.details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.details .detail-item {
+    flex: 1 1 calc(50% - 20px);
+    background: #f5f7fa;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+}
+.detail-item h5 {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #4e73df;
+}
+.detail-item p {
+    margin: 0;
+    color: #333;
+}
+
+/* ---------- SERVICE TYPES ---------- */
+.service-types {
+    margin-top: 20px;
+}
+.service-types span {
+    display: inline-block;
+    background: #1cc88a;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 12px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+/* ---------- DOCUMENTS ---------- */
+.documents {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.documents img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 2px solid #36b9cc;
+}
+
+/* ---------- SECTIONS ---------- */
+.section {
+    margin-top: 40px;
+}
+.section h3 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* ---------- REVIEWS ---------- */
+.review-card {
+    background: #f8f9fc;
+    border-left: 5px solid #4e73df;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+}
+.review-card h5 {
+    margin: 0;
+    color: #333;
+}
+.review-card small {
+    color: #888;
+}
+.review-card p {
+    margin-top: 8px;
+    color: #444;
+}
+
+/* ---------- BOOKINGS ---------- */
+.booking-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+.booking-table th, .booking-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+.booking-table th {
+    background: #4e73df;
+    color: #fff;
+}
+.booking-table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+/* ---------- BUTTONS ---------- */
+.profile-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+}
+.profile-actions a {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #fff;
+    transition: 0.3s;
+}
+.profile-actions .approve { background: #1cc88a; }
+.profile-actions .approve:hover { background: #17a673; }
+.profile-actions .reject { background: #e74a3b; }
+.profile-actions .reject:hover { background: #c0392b; }
+.profile-actions .back { background: #4e73df; }
+.profile-actions .back:hover { background: #2e59d9; }
+
+@media (max-width: 768px) {
+    .details .detail-item { flex: 1 1 100%; }
+    .profile-header { flex-direction: column; align-items: center; text-align: center; }
+}
+</style>
+
+<div class="container">
+    <div class="profile-card">
+        <!-- HEADER -->
+        <div class="profile-header">
+            <img src="{{ url_for('static', filename='uploads/' ~ (sitter.profile_image or 'default-avatar.png')) }}" alt="{{ sitter.name }}">
+            <div class="info">
+                <h2>{{ sitter.name }}</h2>
+                <p>Email: {{ sitter.email or 'N/A' }}</p>
+                <p>Phone: {{ sitter.phone or 'N/A' }}</p>
+                <p>Status: <strong>{{ sitter.display_status() }}</strong></p>
+            </div>
+        </div>
+
+        <!-- DETAILS -->
+        <div class="details">
+            <div class="detail-item">
+                <h5>ID Document</h5>
+                <p>{{ sitter.id_document or 'Not Uploaded' }}</p>
+            </div>
+            <div class="detail-item">
+                <h5>Selfie with ID</h5>
+                <p>{{ sitter.selfie_with_id or 'Not Uploaded' }}</p>
+            </div>
+        </div>
+
+        <!-- SERVICE TYPES -->
+        <div class="service-types">
+            <h5>Services Offered:</h5>
+            {% if sitter.service_types %}
+                {% for service in sitter.service_types %}
+                    <span>{{ service }}</span>
+                {% endfor %}
+            {% else %}
+                <p>No services listed</p>
+            {% endif %}
+        </div>
+
+        <!-- DOCUMENT IMAGES -->
+        <div class="documents">
+            {% if sitter.id_document %}
+            <img src="{{ url_for('static', filename='uploads/' ~ sitter.id_document) }}" alt="ID Document">
+            {% endif %}
+            {% if sitter.selfie_with_id %}
+            <img src="{{ url_for('static', filename='uploads/' ~ sitter.selfie_with_id) }}" alt="Selfie with ID">
+            {% endif %}
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="profile-actions">
+            {% if sitter.verification_status == 'pending' %}
+                <a href="{{ url_for('admin.verify_sitter', sitter_id=sitter.id, action='approved') }}" class="approve">Approve</a>
+                <a href="{{ url_for('admin.verify_sitter', sitter_id=sitter.id, action='rejected') }}" class="reject">Reject</a>
+            {% elif sitter.verification_status == 'approved' %}
+                <span style="color: green; font-weight: bold;">Approved</span>
+                <a href="{{ url_for('admin.verify_sitter', sitter_id=sitter.id, action='rejected') }}" class="reject">Reject</a>
+            {% elif sitter.verification_status == 'rejected' %}
+                <span style="color: red; font-weight: bold;">Rejected</span>
+                <a href="{{ url_for('admin.verify_sitter', sitter_id=sitter.id, action='approved') }}" class="approve">Approve</a>
+            {% endif %}
+            <a href="{{ url_for('admin.dashboard') }}" class="back">Back</a>
+        </div>
+
+        <!-- REVIEWS -->
+        <div class="section">
+            <h3>Sitter Reviews</h3>
+            {% if sitter.reviews %}
+                {% for review in sitter.reviews %}
+                <div class="review-card">
+                    <h5>{{ review.owner_name }} ⭐ {{ review.rating }}/5</h5>
+                    <small>{{ review.created_at.strftime('%d-%m-%Y') }}</small>
+                    <p>{{ review.comment }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No reviews yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- BOOKINGS -->
+        <div class="section">
+            <h3>Bookings</h3>
+            {% if sitter.bookings %}
+            <table class="booking-table">
+                <thead>
+                    <tr>
+                        <th>Owner</th>
+                        <th>Pet</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for booking in sitter.bookings %}
+                    <tr>
+                        <td>{{ booking.pet.owner.name }}</td>
+                        <td>{{ booking.pet.name }}</td>
+                        <td>{{ booking.start_date.strftime('%d-%m-%Y') }}</td>
+                        <td>{{ booking.end_date.strftime('%d-%m-%Y') }}</td>
+                        <td>{{ booking.status }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p>No bookings found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

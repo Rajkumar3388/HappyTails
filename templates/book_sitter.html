@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Book Sitter: {{ sitter.name }}</h2>
+
+<form method="POST" action="{{ url_for('owner.submit_booking', sitter_id=sitter.id) }}">
+  <label for="pet_id">Select Your Pet:</label>
+  <select name="pet_id" id="pet_id" required>
+    {% for pet in pets %}
+      <option value="{{ pet.id }}">{{ pet.name }} ({{ pet.species }})</option>
+    {% endfor %}
+  </select>
+
+  <label for="availability_id">Select Available Slot:</label>
+  <select name="availability_id" id="availability_id" required>
+    {% for avail in availabilities %}
+      <option value="{{ avail.id }}">
+        {{ avail.start_time.strftime('%d-%m-%Y %H:%M') }} to {{ avail.end_time.strftime('%d-%m-%Y %H:%M') }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <button type="submit">Book</button>
+</form>
+{% endblock %}

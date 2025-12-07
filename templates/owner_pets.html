@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+body {
+    background: #ffeedd;
+    background-image: url("{{ url_for('static', filename='images/paw_pattern.png') }}");
+    background-repeat: repeat;
+    background-size: 100px 100px;
+}
+
+/* Pet card */
+.pet-card {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 0 auto;
+    transition: transform 0.2s ease-in-out;
+}
+
+.pet-card:hover {
+    transform: translateY(-5px);
+}
+
+.pet-img {
+    height: 220px;
+    width: 100%;
+    object-fit: cover;
+    object-position: top;
+    display: block;
+    border-radius: 10px 10px 0 0;
+}
+
+.card-body {
+    padding: 1rem;
+    background: linear-gradient(135deg, #fdfbfb, #ebedee);
+    text-align: center;
+}
+
+.card-title {
+    font-size: 1.3rem;
+    color: #ff6f61;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 0.3rem;
+}
+
+.card-body small {
+    display: inline-block;
+    background: #e6f7ff;
+    color: #007bff;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+.btn-group {
+    margin-top: 10px;
+}
+
+.btn-sm {
+    margin: 2px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 576px) {
+    .pet-img {
+        height: 180px;
+    }
+}
+</style>
+
+<div class="container mt-5">
+    <!-- Header and Add Pet button -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h2 class="fw-bold">🐾 Your Pets</h2>
+        <a href="{{ url_for('owner.add_pet') }}" class="btn btn-success btn-lg mt-2 mt-sm-0">+ Add New Pet</a>
+    </div>
+
+    <!-- Pet Cards Grid -->
+    <div class="row">
+        {% for pet in pets %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card pet-card">
+
+                <!-- Clickable image for pet details -->
+                <a href="{{ url_for('owner.pet_detail', pet_id=pet.id) }}">
+                    {% if pet.image %}
+                        <img src="{{ url_for('static', filename='uploads/' + pet.image) }}" class="pet-img" alt="{{ pet.name }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/default_pet.png') }}" class="pet-img" alt="Default Pet">
+                    {% endif %}
+                </a>
+
+                <!-- Card Body -->
+                <div class="card-body">
+                    <h5 class="card-title">{{ pet.name }}</h5>
+                    <p class="card-text">{{ pet.breed }} - {{ pet.age }} years</p>
+                    {% if pet.medical_history %}
+                        <small>{{ pet.medical_history }}</small>
+                    {% endif %}
+
+                    <!-- Action Buttons -->
+                    <div class="btn-group mt-3">
+                        <a href="{{ url_for('owner.pet_detail', pet_id=pet.id) }}" class="btn btn-info btn-sm">View</a>
+                        <a href="{{ url_for('owner.edit_pet', pet_id=pet.id) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{{ url_for('owner.delete_pet', pet_id=pet.id) }}" 
+                           onclick="return confirm('Are you sure you want to delete this pet?');" 
+                           class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- No Pets Message -->
+        <p class="text-center text-muted mt-5 w-100">No pets added yet. Click "Add New Pet" to get started!</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
